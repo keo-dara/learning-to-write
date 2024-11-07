@@ -89,6 +89,11 @@ class DataLoader {
   // next
   Future<void> hasNext() async {
     final data = await JsonReader.readJson('assets/data/position.json');
+    final keys = data.keys;
+
+    if (currentKey == null) {
+      return;
+    }
   }
 
   Future<void> loadData(String key) async {
