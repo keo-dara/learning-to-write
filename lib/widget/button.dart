@@ -42,7 +42,6 @@ class PlayButton extends PositionComponent with TapCallbacks {
   @override
   void onTapUp(TapUpEvent event) {
     scale = Vector2.all(1.0);
-    print("sss");
     action();
   }
 

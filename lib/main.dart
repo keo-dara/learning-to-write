@@ -3,12 +3,12 @@ import 'package:drawing/screen/draw_tracing.dart';
 import 'package:drawing/screen/hub_screen.dart';
 import 'package:drawing/screen/level_screen.dart';
 import 'package:flame/components.dart';
-import 'package:flame/effects.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/rendering.dart';
 import 'package:flutter/widgets.dart' hide Route;
 
+import 'screen/dialog_screen.dart';
 import 'widget/widget.dart';
 
 void main() {
@@ -133,35 +133,4 @@ class PauseRoute extends Route {
       ..resumeTime()
       ..removeRenderEffect();
   }
-}
-
-class PausePage extends Component
-    with TapCallbacks, HasGameReference<RouterGame> {
-  @override
-  Future<void> onLoad() async {
-    final game = findGame()!;
-    addAll([
-      TextComponent(
-        text: 'PAUSED',
-        position: game.canvasSize / 2,
-        anchor: Anchor.center,
-        children: [
-          ScaleEffect.to(
-            Vector2.all(1.1),
-            EffectController(
-              duration: 0.3,
-              alternate: true,
-              infinite: true,
-            ),
-          ),
-        ],
-      ),
-    ]);
-  }
-
-  @override
-  bool containsLocalPoint(Vector2 point) => true;
-
-  @override
-  void onTapUp(TapUpEvent event) => game.router.pop();
 }

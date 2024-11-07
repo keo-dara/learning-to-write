@@ -77,23 +77,24 @@ class DrawingTracingGame extends PositionComponent
 
     // Simple collision detection - check if line endpoints are near objects
     final start = currentLine.first;
-    final end = currentLine.last;
 
     bool startsNearMonkey = monkey!.containsPoint(start);
-    bool endsNearBanana = false;
+
     SpriteComponent? collidedBanana;
+    var containLines = <Vector2>{};
 
     for (final banana in bananas!) {
-      if (banana.containsPoint(end)) {
-        endsNearBanana = true;
-        collidedBanana = banana;
-        break;
+      for (var line in currentLine) {
+        if (banana.containsPoint(line)) {
+          containLines.add(line);
+          break;
+        }
       }
     }
 
     // If line connects monkey to banana, consider it a success
-    if (startsNearMonkey && endsNearBanana && collidedBanana != null) {
-      collidedBanana.scale = Vector2.all(1.2);
+    if (startsNearMonkey && bananas!.length == containLines.length) {
+      collidedBanana?.scale = Vector2.all(1.2);
 
       Future.delayed(const Duration(milliseconds: 300), () {
         if (!isRemoved) {

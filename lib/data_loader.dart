@@ -84,8 +84,15 @@ class PositionData {
 // Updated DataLoader class
 class DataLoader {
   Step? position;
+  String? currentKey;
+
+  // next
+  Future<void> hasNext() async {
+    final data = await JsonReader.readJson('assets/data/position.json');
+  }
 
   Future<void> loadData(String key) async {
+    currentKey = key;
     final data = await JsonReader.readJson('assets/data/position.json');
     position = Step.fromJson(data, key: key);
   }
