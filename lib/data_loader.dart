@@ -36,8 +36,8 @@ class Step {
 
   Step({required this.data});
 
-  factory Step.fromJson(Map<String, dynamic> json) {
-    final List<dynamic> rawData = json['ក'] as List<dynamic>;
+  factory Step.fromJson(Map<String, dynamic> json, {String key = "ក"}) {
+    final List<dynamic> rawData = json[key] as List<dynamic>;
     return Step(
       data: rawData.map((item) => PositionData.fromJson(item)).toList(),
     );
@@ -85,8 +85,10 @@ class PositionData {
 class DataLoader {
   Step? position;
 
-  Future<void> loadData() async {
+  Future<void> loadData(String key) async {
     final data = await JsonReader.readJson('assets/data/position.json');
-    position = Step.fromJson(data);
+    position = Step.fromJson(data, key: key);
   }
 }
+
+final DataLoader dataLoader = DataLoader();

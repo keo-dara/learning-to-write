@@ -1,36 +1,34 @@
 import 'dart:async';
 import 'package:drawing/data_loader.dart';
+import 'package:drawing/main.dart';
 import 'package:drawing/widget/draw_line.dart';
 import 'package:drawing/widget/letter.dart';
 import 'package:flame/components.dart';
-import 'package:flame/game.dart';
-import 'package:flame/input.dart';
+
 import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
 
-class DrawingTracingGame extends FlameGame with PanDetector {
+class DrawingTracingGame extends PositionComponent
+    with DragCallbacks, HasGameReference<RouterGame> {
   SpriteComponent? monkey;
   List<SpriteComponent>? bananas;
   Letter? letter;
   final List<DrawingLine> lines = [];
   List<Vector2> currentLine = [];
   bool isDrawing = false;
-  late final DataLoader dataLoader;
   int currentStep = 0;
-
-  @override
-  Color backgroundColor() => const Color(0xFF333333);
 
   @override
   FutureOr<void> onLoad() async {
     await super.onLoad();
-
-    dataLoader = DataLoader();
-    await dataLoader.loadData();
     await loadTracing();
   }
 
   Future<void> loadTracing() async {
+    if (letter != null) {
+      remove(letter!);
+    }
+
     letter = Letter(pos: dataLoader.position!.data[currentStep]);
     letter!.position = size / 2;
 
@@ -47,19 +45,20 @@ class DrawingTracingGame extends FlameGame with PanDetector {
   }
 
   @override
-  void onPanStart(DragStartInfo info) {
+  void onDragStart(DragStartEvent event) {
+    super.onDragStart(event);
     isDrawing = true;
-    currentLine = [info.eventPosition.widget];
+    currentLine = [event.localPosition];
   }
 
   @override
-  void onPanUpdate(DragUpdateInfo info) {
+  void onDragUpdate(DragUpdateEvent event) {
+    super.onDragUpdate(event);
     if (!isDrawing) return;
-    currentLine.add(info.eventPosition.widget);
+    currentLine.add(event.canvasStartPosition);
     final newLine = DrawingLine(List.from(currentLine), Colors.red);
     add(newLine);
 
-    // Remove the previous line to avoid duplicates
     if (lines.isNotEmpty) {
       remove(lines.last);
     }
@@ -67,7 +66,8 @@ class DrawingTracingGame extends FlameGame with PanDetector {
   }
 
   @override
-  void onPanEnd(DragEndInfo info) {
+  void onDragEnd(DragEndEvent event) {
+    super.onDragEnd(event);
     isDrawing = false;
     checkCollisions();
   }
@@ -93,21 +93,27 @@ class DrawingTracingGame extends FlameGame with PanDetector {
 
     // If line connects monkey to banana, consider it a success
     if (startsNearMonkey && endsNearBanana && collidedBanana != null) {
-      print('Success! Connected monkey to banana!');
-      // Add visual feedback
-      collidedBanana.scale =
-          Vector2.all(1.2); // Temporarily scale up the banana
+      collidedBanana.scale = Vector2.all(1.2);
+
       Future.delayed(const Duration(milliseconds: 300), () {
         if (!isRemoved) {
-          // Check if the game is still active
           collidedBanana?.scale = Vector2.all(1.0);
-          // clearDrawing();
-          currentStep = 1;
-          loadTracing();
           monkey = null;
+
+          if (isended()) {
+            game.router.pushNamed('pause');
+          } else {
+            currentStep += 1;
+            loadTracing();
+          }
         }
       });
     }
+  }
+
+  bool isended() {
+    return dataLoader.position!.data[currentStep] ==
+        dataLoader.position!.data.last;
   }
 
   void clearDrawing() {
@@ -116,5 +122,10 @@ class DrawingTracingGame extends FlameGame with PanDetector {
     }
     lines.clear();
     currentLine.clear();
+  }
+
+  @override
+  void onRemove() {
+    removeFromParent();
   }
 }

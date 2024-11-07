@@ -2,6 +2,7 @@ import 'package:drawing/data_loader.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame_svg/flame_svg.dart';
+import 'package:flutter/foundation.dart';
 
 class Letter extends SvgComponent with TapCallbacks {
   Letter({
@@ -25,7 +26,7 @@ class Letter extends SvgComponent with TapCallbacks {
   @override
   Future<void> onLoad() async {
     final spriteSizeBig = Vector2.all(340.0);
-    svg = await Svg.load('/svg/2.svg');
+    svg = await Svg.load(pos.asset);
     size = spriteSizeBig;
     anchor = Anchor.center;
     addDrawingRange();
@@ -33,7 +34,9 @@ class Letter extends SvgComponent with TapCallbacks {
 
   @override
   void onTapDown(TapDownEvent event) {
-    print(event.localPosition);
+    if (kDebugMode) {
+      print(event.localPosition);
+    }
   }
 
   void addDrawingRange() {
@@ -54,6 +57,11 @@ class Letter extends SvgComponent with TapCallbacks {
       monkeys.add(monkey);
       add(monkey);
     }
+  }
+
+  @override
+  void onRemove() {
+    removeFromParent();
   }
 }
 
