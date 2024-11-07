@@ -1,8 +1,10 @@
 import 'package:drawing/data_loader.dart';
 import 'package:flame/components.dart';
+import 'package:flame/events.dart';
 import 'package:flame_svg/flame_svg.dart';
+import 'package:flutter/foundation.dart';
 
-class Letter extends SvgComponent {
+class Letter extends SvgComponent with TapCallbacks {
   Letter({
     super.svg,
     super.position,
@@ -30,12 +32,12 @@ class Letter extends SvgComponent {
     addDrawingRange();
   }
 
-  // @override
-  // void onTapDown(TapDownEvent event) {
-  //   if (kDebugMode) {
-  //     print(event.localPosition);
-  //   }
-  // }
+  @override
+  void onTapDown(TapDownEvent event) {
+    if (kDebugMode) {
+      print(event.localPosition);
+    }
+  }
 
   void addDrawingRange() {
     final bs = pos.banana;
