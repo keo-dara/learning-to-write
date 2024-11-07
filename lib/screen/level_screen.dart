@@ -87,7 +87,7 @@ class LevelCell extends PositionComponent with TapCallbacks {
     // Add cell background
     background = RectangleComponent(
       size: size,
-      paint: Paint()..color = const Color(0xFF4A1B7A),
+      paint: Paint()..color = const Color(0xFF745E35),
     );
     add(background);
 

@@ -19,12 +19,12 @@ class PausePage extends Component
     dialog =
         SvgComponent(svg: svg, size: Vector2(324, 406), anchor: Anchor.center);
     next = SvgComponent(
-        svg: svgnext, size: Vector2(70, 70), anchor: Anchor.center);
+        svg: svgnext, size: Vector2(80, 80), anchor: Anchor.center);
     retry = SvgComponent(
-        svg: svgretry, size: Vector2(70, 70), anchor: Anchor.center);
+        svg: svgretry, size: Vector2(100, 100), anchor: Anchor.center);
 
     dialog.position = game.size / 2;
-    retry.position = Vector2(dialog.position.x - 40, dialog.position.y + 10);
+    retry.position = Vector2(dialog.position.x - 40, dialog.position.y);
     next.position = Vector2(dialog.position.x + 60, dialog.position.y + 10);
     addAll([dialog, next, retry]);
   }
