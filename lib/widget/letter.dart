@@ -1,8 +1,11 @@
 import 'package:drawing/data_loader.dart';
+import 'package:drawing/widget/widget.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame_svg/flame_svg.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class Letter extends SvgComponent with TapCallbacks {
   Letter({
@@ -30,12 +33,16 @@ class Letter extends SvgComponent with TapCallbacks {
     size = spriteSizeBig;
     anchor = Anchor.center;
     addDrawingRange();
+    loadDebug();
   }
+
+  List<Vector2> points = [];
 
   @override
   void onTapDown(TapDownEvent event) {
     if (kDebugMode) {
       print(event.localPosition);
+      points.add(event.localPosition);
     }
   }
 
@@ -62,6 +69,30 @@ class Letter extends SvgComponent with TapCallbacks {
   @override
   void onRemove() {
     removeFromParent();
+  }
+
+  void loadDebug() {
+    if (kDebugMode) {
+      final btnCopy = RoundedButton(
+        text: 'COPY',
+        action: () {
+          Clipboard.setData(ClipboardData(text: "${points}"));
+        },
+        color: Colors.green,
+        borderColor: Colors.white,
+      );
+      final btnClear = RoundedButton(
+        text: 'CLEAR',
+        action: () {
+          points.clear();
+        },
+        color: Colors.red,
+        borderColor: Colors.white,
+      );
+      btnCopy.position = Vector2(size.x / 2, 0);
+      // btnCopy.position = size / 2.5;
+      addAll([btnClear, btnCopy]);
+    }
   }
 }
 
