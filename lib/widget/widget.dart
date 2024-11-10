@@ -112,7 +112,7 @@ class BackButton extends SimpleButton with HasGameReference<RouterGame> {
             ..lineTo(22, 32)
             ..moveTo(12, 20)
             ..lineTo(34, 20),
-          position: Vector2.all(10),
+          position: Vector2(10, 35),
         );
 
   @override
@@ -127,7 +127,7 @@ class PauseButton extends SimpleButton with HasGameReference<RouterGame> {
             ..lineTo(14, 30)
             ..moveTo(26, 10)
             ..lineTo(26, 30),
-          position: Vector2(60, 10),
+          position: Vector2(60, 35),
         );
   @override
   void action() => game.router.pushNamed('pause');

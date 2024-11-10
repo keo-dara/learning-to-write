@@ -1,4 +1,5 @@
 import 'package:drawing/data_loader.dart';
+import 'package:drawing/widget/widget.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flutter/material.dart' hide BackButton;
@@ -9,7 +10,10 @@ class LevelScreen extends PositionComponent {
   final double cellPadding = 10.0;
   late List<LevelCell> gridCells;
   final Function(String) onTapAt;
-  late final List<String> keys;
+  List<String>? keys;
+  int page = 0;
+  late final List<String> allKeys; // Store all keys
+  static const int itemsPerPage = 24;
 
   LevelScreen({
     super.position,
@@ -27,9 +31,64 @@ class LevelScreen extends PositionComponent {
   @override
   Future<void> onLoad() async {
     final data = await JsonReader.readJson('assets/data/position.json');
-    keys = data.keys.toList();
+    allKeys = data.keys.toList(); // Store all keys
+    updateCurrentPageKeys(); // Initialize keys for current page
 
     await buildGrid();
+    await addNavigationButtons();
+  }
+
+  void updateCurrentPageKeys() {
+    final startIndex = page * itemsPerPage;
+    keys = allKeys.skip(startIndex).take(itemsPerPage).toList();
+  }
+
+  Future<void> addNavigationButtons() async {
+    final game = findGame()!;
+
+    // Previous button
+    final buttonPrev = RoundedButton(
+      text: "PREV",
+      action: () async {
+        if (page > 0) {
+          page--;
+          updateCurrentPageKeys();
+          removeAll(gridCells);
+          await buildGrid();
+        }
+      },
+      color: Colors.green,
+      borderColor: Colors.white,
+    );
+
+    // Next button
+    final buttonNext = RoundedButton(
+      text: "NEXT",
+      action: () async {
+        if ((page + 1) * itemsPerPage < allKeys.length) {
+          page++;
+          updateCurrentPageKeys();
+          removeAll(gridCells);
+          await buildGrid();
+        }
+      },
+      color: Colors.green,
+      borderColor: Colors.white,
+    );
+
+    // Position buttons at the bottom of the screen
+    buttonPrev.position = Vector2(
+      game.size.x * 0.25, // 25% from left
+      game.size.y - 60,
+    );
+
+    buttonNext.position = Vector2(
+      game.size.x * 0.75, // 75% from left
+      game.size.y - 60,
+    );
+
+    add(buttonPrev);
+    add(buttonNext);
   }
 
   Future<void> buildGrid() async {
@@ -37,7 +96,7 @@ class LevelScreen extends PositionComponent {
 
     // Calculate grid dimensions
     final availableWidth = game.size.x * 1;
-    final availableHeight = game.size.y * 0.9;
+    final availableHeight = game.size.y * 0.80;
 
     final cellWidth =
         (availableWidth - (cellPadding * (gridColumns + 1))) / gridColumns;
@@ -49,7 +108,7 @@ class LevelScreen extends PositionComponent {
     for (int row = 0; row < gridRows; row++) {
       for (int col = 0; col < gridColumns; col++) {
         final cellIndex = row * gridColumns + col;
-        final data = keys.elementAtOrNull(cellIndex);
+        final data = keys!.elementAtOrNull(cellIndex);
 
         if (data != null) {
           final cell = LevelCell(

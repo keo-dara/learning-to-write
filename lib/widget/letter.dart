@@ -89,7 +89,9 @@ class Letter extends SvgComponent with TapCallbacks {
         color: Colors.red,
         borderColor: Colors.white,
       );
-      btnCopy.position = Vector2(size.x / 2, 0);
+      const offset = -120.0;
+      btnCopy.position = Vector2(size.x / 1.5 + 20, offset);
+      btnClear.position = Vector2(size.x / 3 - 20, offset);
       // btnCopy.position = size / 2.5;
       addAll([btnClear, btnCopy]);
     }

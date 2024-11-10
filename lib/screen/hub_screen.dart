@@ -25,7 +25,7 @@ class HubScreen extends Component with HasGameReference<RouterGame> {
 
   @override
   FutureOr<void> onLoad() async {
-    final svg = await Svg.load('/svg/logo.svg');
+    final svg = await Svg.load('svg/logo.svg');
     final bg = await Sprite.load('bg.png');
 
     _bg.sprite = bg;

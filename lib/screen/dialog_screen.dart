@@ -13,9 +13,9 @@ class PausePage extends Component
   Future<void> onLoad() async {
     final game = findGame()!;
 
-    final svg = await Svg.load('/svg/dummy.svg');
-    final svgnext = await Svg.load('/svg/next.svg');
-    final svgretry = await Svg.load('/svg/retry.svg');
+    final svg = await Svg.load('svg/dummy.svg');
+    final svgnext = await Svg.load('svg/next.svg');
+    final svgretry = await Svg.load('svg/retry.svg');
     dialog =
         SvgComponent(svg: svg, size: Vector2(324, 406), anchor: Anchor.center);
     next = SvgComponent(

@@ -55,6 +55,7 @@ class LevelPage extends Component
       await dataLoader.loadData(key);
       game.router.pushNamed('level2');
     });
+    tracing.position = Vector2(0, 20);
     tracing.size = gg.size;
     final bgSprite = await Sprite.load('bg.png');
     bg = SpriteComponent(anchor: Anchor.center);

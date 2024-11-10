@@ -22,7 +22,7 @@ class PlayButton extends PositionComponent with TapCallbacks {
 
   @override
   FutureOr<void> onLoad() async {
-    final svg = await Svg.load('/svg/play.svg');
+    final svg = await Svg.load('svg/play.svg');
 
     final svgSprite = SvgComponent(
       svg: svg,
