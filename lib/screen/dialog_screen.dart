@@ -1,3 +1,4 @@
+import 'package:drawing/data_loader.dart';
 import 'package:drawing/main.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
@@ -37,14 +38,15 @@ class PausePage extends Component
     if (next.containsPoint(event.localPosition)) {
       game.router.pop();
       game.router.pop();
-      Future.delayed(const Duration(milliseconds: 10)).then((_) {
+      Future.delayed(const Duration(milliseconds: 10)).then((_) async {
+        await dataLoader.next();
         game.router.pushNamed('level2');
       });
     }
     if (retry.containsPoint(event.localPosition)) {
       game.router.pop();
       game.router.pop();
-      Future.delayed(const Duration(milliseconds: 10)).then((_) {
+      Future.delayed(const Duration(milliseconds: 10)).then((_) async {
         game.router.pushNamed('level2');
       });
     }

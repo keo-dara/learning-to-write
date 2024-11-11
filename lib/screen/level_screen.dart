@@ -9,7 +9,7 @@ class LevelScreen extends PositionComponent {
   static const int gridColumns = 3;
   final double cellPadding = 10.0;
   late List<LevelCell> gridCells;
-  final Function(String) onTapAt;
+  final Function(int) onTapAt;
   List<String>? keys;
   int page = 0;
   late final List<String> allKeys; // Store all keys
@@ -120,7 +120,7 @@ class LevelScreen extends PositionComponent {
                   row * (cellHeight + cellPadding),
             ),
             Vector2(cellWidth, cellHeight),
-            action: () => onTapAt(data),
+            action: () => onTapAt(cellIndex),
           );
           gridCells.add(cell);
         }

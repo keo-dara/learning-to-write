@@ -84,21 +84,21 @@ class PositionData {
 // Updated DataLoader class
 class DataLoader {
   Step? position;
-  String? currentKey;
+  int? currentIndex;
 
   // next
-  Future<void> hasNext() async {
-    final data = await JsonReader.readJson('assets/data/position.json');
-    final keys = data.keys;
-
-    if (currentKey == null) {
+  Future<void> next() async {
+    if (currentIndex == null) {
       return;
     }
+    currentIndex = currentIndex! + 1;
+    await loadData(currentIndex!);
   }
 
-  Future<void> loadData(String key) async {
-    currentKey = key;
+  Future<void> loadData(int index) async {
+    currentIndex = index;
     final data = await JsonReader.readJson('assets/data/position.json');
+    final key = data.keys.toList()[currentIndex!];
     position = Step.fromJson(data, key: key);
   }
 }

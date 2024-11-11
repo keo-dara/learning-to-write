@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class Letter extends SvgComponent with TapCallbacks {
+class Letter extends SvgComponent {
   Letter({
     super.svg,
     super.position,
@@ -33,7 +33,7 @@ class Letter extends SvgComponent with TapCallbacks {
     size = spriteSizeBig;
     anchor = Anchor.center;
     addDrawingRange();
-    loadDebug();
+    // loadDebug();
   }
 
   List<Vector2> points = [];
