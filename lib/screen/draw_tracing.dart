@@ -7,6 +7,7 @@ import 'package:flame/components.dart';
 
 import 'package:flame/events.dart';
 import 'package:flutter/material.dart';
+import 'package:vibration/vibration.dart';
 
 class DrawingTracingGame extends PositionComponent
     with DragCallbacks, HasGameReference<RouterGame> {
@@ -72,7 +73,7 @@ class DrawingTracingGame extends PositionComponent
     checkCollisions();
   }
 
-  void checkCollisions() {
+  void checkCollisions() async {
     if (currentLine.isEmpty) return;
 
     // Simple collision detection - check if line endpoints are near objects
@@ -96,12 +97,13 @@ class DrawingTracingGame extends PositionComponent
     if (startsNearMonkey && bananas!.length == containLines.length) {
       collidedBanana?.scale = Vector2.all(1.2);
 
-      Future.delayed(const Duration(milliseconds: 300), () {
+      Future.delayed(const Duration(milliseconds: 300), () async {
         if (!isRemoved) {
           collidedBanana?.scale = Vector2.all(1.0);
           monkey = null;
 
           if (isended()) {
+            await Vibration.vibrate();
             game.router.pushNamed('pause');
           } else {
             currentStep += 1;

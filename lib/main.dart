@@ -6,13 +6,16 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/rendering.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/widgets.dart' hide Route;
 
 import 'screen/dialog_screen.dart';
 import 'widget/widget.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   final game = RouterGame();
+  FlameAudio.bgm.play('bg.mp3', volume: .1);
   runApp(GameWidget(game: game));
 }
 

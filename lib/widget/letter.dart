@@ -116,6 +116,6 @@ class Banana extends SpriteComponent {
     sprite = await Sprite.load('banana.png');
     size = spriteSize;
     anchor = Anchor.center;
-    size = Vector2.all(45.0);
+    size = Vector2.all(50.0);
   }
 }
