@@ -5,11 +5,11 @@ import 'package:flame/events.dart';
 import 'package:flame_svg/flame_svg.dart';
 
 class PlayButton extends PositionComponent with TapCallbacks {
+  final String icon;
   final void Function() action;
 
   PlayButton({
     super.position,
-    super.size,
     super.scale,
     super.angle,
     super.nativeAngle,
@@ -17,18 +17,19 @@ class PlayButton extends PositionComponent with TapCallbacks {
     super.children,
     super.priority,
     super.key,
+    required this.icon,
     required this.action,
   });
 
   @override
   FutureOr<void> onLoad() async {
-    final svg = await Svg.load('svg/play.svg');
+    final svg = await Svg.load(icon);
 
     final svgSprite = SvgComponent(
       svg: svg,
       anchor: Anchor.center,
       position: size / 2,
-      size: Vector2(160, 80),
+      size: size,
     );
 
     add(svgSprite);
