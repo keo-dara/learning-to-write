@@ -1,7 +1,8 @@
 import 'package:drawing/data_loader.dart';
-import 'package:drawing/widget/widget.dart';
+import 'package:drawing/widget/button.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
+import 'package:flame_svg/flame_svg.dart';
 import 'package:flutter/material.dart' hide BackButton;
 
 class LevelScreen extends PositionComponent {
@@ -47,8 +48,8 @@ class LevelScreen extends PositionComponent {
     final game = findGame()!;
 
     // Previous button
-    final buttonPrev = RoundedButton(
-      text: "PREV",
+    final buttonPrev = PlayButton(
+      icon: "svg/less.svg",
       action: () async {
         if (page > 0) {
           page--;
@@ -57,13 +58,13 @@ class LevelScreen extends PositionComponent {
           await buildGrid();
         }
       },
-      color: Colors.green,
-      borderColor: Colors.white,
     );
 
+    final btnY = game.size.y - 110;
+
     // Next button
-    final buttonNext = RoundedButton(
-      text: "NEXT",
+    final buttonNext = PlayButton(
+      icon: "svg/more.svg",
       action: () async {
         if ((page + 1) * itemsPerPage < allKeys.length) {
           page++;
@@ -72,20 +73,20 @@ class LevelScreen extends PositionComponent {
           await buildGrid();
         }
       },
-      color: Colors.green,
-      borderColor: Colors.white,
     );
 
     // Position buttons at the bottom of the screen
     buttonPrev.position = Vector2(
       game.size.x * 0.25, // 25% from left
-      game.size.y - 60,
+      btnY,
     );
 
     buttonNext.position = Vector2(
-      game.size.x * 0.75, // 75% from left
-      game.size.y - 60,
+      game.size.x * 0.55, // 75% from left
+      btnY,
     );
+    buttonNext.size = Vector2(100, 80);
+    buttonPrev.size = buttonNext.size;
 
     add(buttonPrev);
     add(buttonNext);
@@ -134,7 +135,8 @@ class LevelScreen extends PositionComponent {
 class LevelCell extends PositionComponent with TapCallbacks {
   final String levelNumber;
   late TextComponent levelText;
-  late RectangleComponent background;
+  late final SvgComponent background;
+
   final void Function() action;
 
   LevelCell(this.levelNumber, Vector2 position, Vector2 size,
@@ -143,10 +145,9 @@ class LevelCell extends PositionComponent with TapCallbacks {
 
   @override
   Future<void> onLoad() async {
-    // Add cell background
-    background = RectangleComponent(
+    background = SvgComponent(
+      svg: await Svg.load('svg/tile.svg'),
       size: size,
-      paint: Paint()..color = const Color(0xFF745E35),
     );
     add(background);
 

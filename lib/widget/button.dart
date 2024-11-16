@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:drawing/cores/game_sound.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flame_svg/flame_svg.dart';
 
 class PlayButton extends PositionComponent with TapCallbacks {
@@ -43,6 +45,7 @@ class PlayButton extends PositionComponent with TapCallbacks {
   @override
   void onTapUp(TapUpEvent event) {
     scale = Vector2.all(1.0);
+    GameSound.playClickSound();
     action();
   }
 

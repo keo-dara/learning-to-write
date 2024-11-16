@@ -1,3 +1,5 @@
+import 'package:drawing/cores/game_config.dart';
+import 'package:drawing/cores/game_sound.dart';
 import 'package:drawing/data_loader.dart';
 import 'package:drawing/screen/draw_tracing.dart';
 import 'package:drawing/screen/hub_screen.dart';
@@ -7,14 +9,18 @@ import 'package:flame/events.dart';
 import 'package:flame/game.dart';
 import 'package:flame/rendering.dart';
 import 'package:flame_audio/flame_audio.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:flutter/widgets.dart' hide Route;
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'screen/dialog_screen.dart';
 import 'widget/widget.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
+
   final game = RouterGame();
 
   runApp(GameWidget(game: game));
@@ -40,7 +46,9 @@ class RouterGame extends FlameGame {
   }
 
   void beforePlay() async {
-    await FlameAudio.bgm.play('bg.mp3', volume: 0.1);
+    if (!kDebugMode) {
+      await FlameAudio.bgm.play('bg.mp3', volume: 0.1);
+    }
   }
 
   @override
@@ -49,25 +57,21 @@ class RouterGame extends FlameGame {
   }
 }
 
-class Background extends Component {
-  Background(this.color);
-  final Color color;
-
-  @override
-  void render(Canvas canvas) {
-    canvas.drawColor(color, BlendMode.srcATop);
-  }
-}
-
 class LevelPage extends Component
     with TapCallbacks, HasGameReference<RouterGame> {
   late final SpriteComponent bg;
+
+  RewardedAd? _rewardedAd;
+
   @override
   Future<void> onLoad() async {
     final gg = findGame()!;
     final tracing = LevelScreen(onTapAt: (key) async {
+      // _rewardedAd?.show(onUserEarnedReward: (view, reward) async {
+      GameSound.playClickSound();
       await dataLoader.loadData(key);
       game.router.pushNamed('level2');
+      // });
     });
     tracing.position = Vector2(0, 20);
     tracing.size = gg.size;
@@ -79,12 +83,30 @@ class LevelPage extends Component
       BackButton(),
       tracing,
     ]);
+    _loadRewardAds();
   }
 
   @override
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
     bg.position = size / 2;
+  }
+
+  void _loadRewardAds() {
+    RewardedAd.load(
+      adUnitId:
+          kDebugMode ? GameConfig.testrewardAdUnit : GameConfig.rewardAdUnit,
+      request: const AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(
+        onAdLoaded: (ad) {
+          _rewardedAd = ad;
+          print("Rewarded Ads Loaded");
+        },
+        onAdFailedToLoad: (error) {
+          print("Rewarded Ads Failed to load");
+        },
+      ),
+    );
   }
 }
 
