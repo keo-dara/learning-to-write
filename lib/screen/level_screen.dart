@@ -1,3 +1,4 @@
+import 'package:drawing/cores/game_store.dart';
 import 'package:drawing/data_loader.dart';
 import 'package:drawing/widget/button.dart';
 import 'package:flame/components.dart';
@@ -32,6 +33,7 @@ class LevelScreen extends PositionComponent {
   @override
   Future<void> onLoad() async {
     final data = await JsonReader.readJson('assets/data/position.json');
+    await gameStore.load();
     allKeys = data.keys.toList(); // Store all keys
     updateCurrentPageKeys(); // Initialize keys for current page
 
@@ -110,6 +112,7 @@ class LevelScreen extends PositionComponent {
       for (int col = 0; col < gridColumns; col++) {
         final cellIndex = row * gridColumns + col;
         final data = keys!.elementAtOrNull(cellIndex);
+        final locked = !gameStore.unlocked.contains(data);
 
         if (data != null) {
           final cell = LevelCell(
@@ -121,7 +124,14 @@ class LevelScreen extends PositionComponent {
                   row * (cellHeight + cellPadding),
             ),
             Vector2(cellWidth, cellHeight),
-            action: () => onTapAt(cellIndex + itemsPerPage),
+            action: () {
+              if (!locked) {
+                onTapAt(cellIndex + (itemsPerPage * page));
+              } else {
+                // show ads
+              }
+            },
+            locked: locked,
           );
           gridCells.add(cell);
         }
@@ -134,19 +144,26 @@ class LevelScreen extends PositionComponent {
 
 class LevelCell extends PositionComponent with TapCallbacks {
   final String levelNumber;
+  final bool locked;
   late TextComponent levelText;
   late final SvgComponent background;
 
   final void Function() action;
 
-  LevelCell(this.levelNumber, Vector2 position, Vector2 size,
-      {required this.action})
-      : super(position: position, size: size);
+  LevelCell(
+    this.levelNumber,
+    Vector2 position,
+    Vector2 size, {
+    required this.action,
+    required this.locked,
+  }) : super(position: position, size: size);
 
   @override
   Future<void> onLoad() async {
     background = SvgComponent(
-      svg: await Svg.load('svg/tile.svg'),
+      svg: !locked
+          ? await Svg.load('svg/tile.svg')
+          : await Svg.load('svg/locked.svg'),
       size: size,
     );
     add(background);
