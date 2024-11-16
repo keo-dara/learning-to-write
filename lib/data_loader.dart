@@ -85,22 +85,32 @@ class PositionData {
 class DataLoader {
   Step? position;
   int? currentIndex;
+  int total = -1;
 
   // next
-  Future<void> next() async {
+  Future<bool> next() async {
     if (currentIndex == null) {
-      return;
+      return false;
     }
+    if (currentIndex == total - 1) {
+      return false;
+    }
+
     currentIndex = currentIndex! + 1;
     await loadData(currentIndex!);
+
+    return true;
   }
 
   Future<void> loadData(int index) async {
     currentIndex = index;
     final data = await JsonReader.readJson('assets/data/position.json');
     final key = data.keys.toList()[currentIndex!];
+    total = data.keys.length;
     position = Step.fromJson(data, key: key);
   }
+
+  bool get isLast => currentIndex == total - 1;
 }
 
 final DataLoader dataLoader = DataLoader();

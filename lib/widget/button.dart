@@ -19,6 +19,7 @@ class PlayButton extends PositionComponent with TapCallbacks {
     super.children,
     super.priority,
     super.key,
+    super.size,
     required this.icon,
     required this.action,
   });

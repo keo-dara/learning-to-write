@@ -42,7 +42,7 @@ class HubScreen extends Component with HasGameReference<RouterGame> {
       _logo = SvgComponent(size: Vector2.all(340.0), anchor: Anchor.center),
       _startButton,
       _soundButton,
-      _rateButton,
+      // _rateButton,
     ]);
   }
 

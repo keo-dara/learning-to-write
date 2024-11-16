@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:drawing/cores/game_sound.dart';
 import 'package:drawing/data_loader.dart';
 import 'package:drawing/main.dart';
 import 'package:drawing/widget/draw_line.dart';
@@ -103,12 +104,13 @@ class DrawingTracingGame extends PositionComponent
           monkey = null;
 
           if (isended()) {
-            await Vibration.vibrate();
             game.router.pushNamed('pause');
           } else {
             currentStep += 1;
             loadTracing();
           }
+          await Vibration.vibrate();
+          GameSound.playWinSound();
         }
       });
     }

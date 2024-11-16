@@ -121,7 +121,7 @@ class LevelScreen extends PositionComponent {
                   row * (cellHeight + cellPadding),
             ),
             Vector2(cellWidth, cellHeight),
-            action: () => onTapAt(cellIndex),
+            action: () => onTapAt(cellIndex + itemsPerPage),
           );
           gridCells.add(cell);
         }

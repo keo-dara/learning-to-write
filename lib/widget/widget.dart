@@ -1,3 +1,4 @@
+import 'package:drawing/cores/game_sound.dart';
 import 'package:drawing/main.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
@@ -116,7 +117,10 @@ class BackButton extends SimpleButton with HasGameReference<RouterGame> {
         );
 
   @override
-  void action() => game.router.pop();
+  void action() {
+    game.router.pop();
+    GameSound.playClickSound();
+  }
 }
 
 class PauseButton extends SimpleButton with HasGameReference<RouterGame> {
