@@ -99,18 +99,19 @@ class PausePage extends Component
 class LockedDailog extends Component
     with TapCallbacks, HasGameReference<RouterGame> {
   late final SvgComponent dialog;
+  late final SvgComponent lockedAds;
   late final PlayButton next;
   late final PlayButton home;
 
   LockedDailog() {
     next = PlayButton(
-        icon: "svg/next.svg",
-        size: Vector2(80, 80),
+        icon: "svg/watch_unlock.svg",
+        size: Vector2(200, 210),
         anchor: Anchor.center,
         action: _loadRewardAds);
     home = PlayButton(
-        icon: "svg/home.svg",
-        size: Vector2(80, 80),
+        icon: "svg/close_btn.svg",
+        size: Vector2(40, 40),
         anchor: Anchor.center,
         action: retryGame);
   }
@@ -120,22 +121,25 @@ class LockedDailog extends Component
     final game = findGame()!;
 
     final svg = await Svg.load('svg/dummy.svg');
+    final locked = await Svg.load('svg/locked_ads.svg');
 
     dialog =
         SvgComponent(svg: svg, size: Vector2(324, 406), anchor: Anchor.center);
+    lockedAds = SvgComponent(
+        svg: locked, size: Vector2(98, 111), anchor: Anchor.center);
 
     dialog.position = game.size / 2;
-    next.position = Vector2(dialog.position.x + 60, dialog.position.y + 80);
-    home.position = Vector2(dialog.position.x - 40, next.position.y);
+    lockedAds.position = Vector2(dialog.position.x, dialog.position.y - 40);
+    next.position = Vector2(dialog.position.x, dialog.position.y + 80);
+    home.position = Vector2(dialog.position.x + (dialog.width / 2) - 30,
+        dialog.position.y - (dialog.height / 2) + 65);
     addAll([
       dialog,
+      lockedAds,
       next,
       home,
     ]);
   }
-
-  @override
-  bool containsLocalPoint(Vector2 point) => true;
 
   void retryGame() {
     game.router.pop();
