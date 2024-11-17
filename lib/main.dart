@@ -1,5 +1,6 @@
 import 'package:drawing/cores/game_config.dart';
 import 'package:drawing/cores/game_sound.dart';
+import 'package:drawing/cores/game_store.dart';
 import 'package:drawing/data_loader.dart';
 import 'package:drawing/screen/draw_tracing.dart';
 import 'package:drawing/screen/hub_screen.dart';
@@ -38,6 +39,7 @@ class RouterGame extends FlameGame {
           'level1': Route(LevelPage.new),
           'level2': Route(PlayingPage.new),
           'pause': PauseRoute(),
+          'locked': LockedRoute(),
         },
         initialRoute: 'home',
       ),
@@ -61,17 +63,19 @@ class LevelPage extends Component
     with TapCallbacks, HasGameReference<RouterGame> {
   late final SpriteComponent bg;
 
-  RewardedAd? _rewardedAd;
-
   @override
   Future<void> onLoad() async {
     final gg = findGame()!;
-    final tracing = LevelScreen(onTapAt: (key) async {
-      // _rewardedAd?.show(onUserEarnedReward: (view, reward) async {
-      GameSound.playClickSound();
-      await dataLoader.loadData(key);
-      game.router.pushNamed('level2');
-      // });
+    final tracing = LevelScreen(onTapAt: (index, locked) async {
+      final key = await dataLoader.loadData(index);
+
+      if (locked) {
+        gameStore.wantToUnlocked = key;
+        game.router.pushNamed('locked');
+      } else {
+        GameSound.playClickSound();
+        game.router.pushNamed('level2');
+      }
     });
     tracing.position = Vector2(0, 20);
     tracing.size = gg.size;
@@ -83,30 +87,12 @@ class LevelPage extends Component
       BackButton(),
       tracing,
     ]);
-    _loadRewardAds();
   }
 
   @override
   void onGameResize(Vector2 size) {
     super.onGameResize(size);
     bg.position = size / 2;
-  }
-
-  void _loadRewardAds() {
-    RewardedAd.load(
-      adUnitId:
-          kDebugMode ? GameConfig.testrewardAdUnit : GameConfig.rewardAdUnit,
-      request: const AdRequest(),
-      rewardedAdLoadCallback: RewardedAdLoadCallback(
-        onAdLoaded: (ad) {
-          _rewardedAd = ad;
-          print("Rewarded Ads Loaded");
-        },
-        onAdFailedToLoad: (error) {
-          print("Rewarded Ads Failed to load");
-        },
-      ),
-    );
   }
 }
 
@@ -154,6 +140,26 @@ class PlayingPage extends Component {
 
 class PauseRoute extends Route {
   PauseRoute() : super(PausePage.new, transparent: true);
+
+  @override
+  void onPush(Route? previousRoute) {
+    previousRoute!
+      ..stopTime()
+      ..addRenderEffect(
+        PaintDecorator.grayscale(opacity: 0.5)..addBlur(3.0),
+      );
+  }
+
+  @override
+  void onPop(Route nextRoute) {
+    nextRoute
+      ..resumeTime()
+      ..removeRenderEffect();
+  }
+}
+
+class LockedRoute extends Route {
+  LockedRoute() : super(LockedDailog.new, transparent: true);
 
   @override
   void onPush(Route? previousRoute) {

@@ -1,17 +1,15 @@
 import 'package:drawing/cores/game_store.dart';
 import 'package:drawing/data_loader.dart';
 import 'package:drawing/widget/button.dart';
+import 'package:drawing/widget/level_cell.dart';
 import 'package:flame/components.dart';
-import 'package:flame/events.dart';
-import 'package:flame_svg/flame_svg.dart';
-import 'package:flutter/material.dart' hide BackButton;
 
 class LevelScreen extends PositionComponent {
   static const int gridRows = 8;
   static const int gridColumns = 3;
   final double cellPadding = 10.0;
   late List<LevelCell> gridCells;
-  final Function(int) onTapAt;
+  final Function(int, bool) onTapAt;
   List<String>? keys;
   int page = 0;
   late final List<String> allKeys; // Store all keys
@@ -39,6 +37,17 @@ class LevelScreen extends PositionComponent {
 
     await buildGrid();
     await addNavigationButtons();
+  }
+
+  @override
+  void update(double dt) async {
+    if (gameStore.wantToUnlocked != null) {
+      updateCurrentPageKeys();
+      removeAll(gridCells);
+      await buildGrid();
+      gameStore.wantToUnlocked = null;
+    }
+    super.update(dt);
   }
 
   void updateCurrentPageKeys() {
@@ -125,11 +134,7 @@ class LevelScreen extends PositionComponent {
             ),
             Vector2(cellWidth, cellHeight),
             action: () {
-              if (!locked) {
-                onTapAt(cellIndex + (itemsPerPage * page));
-              } else {
-                // show ads
-              }
+              onTapAt(cellIndex + (itemsPerPage * page), locked);
             },
             locked: locked,
           );
@@ -139,69 +144,5 @@ class LevelScreen extends PositionComponent {
     }
 
     addAll(gridCells);
-  }
-}
-
-class LevelCell extends PositionComponent with TapCallbacks {
-  final String levelNumber;
-  final bool locked;
-  late TextComponent levelText;
-  late final SvgComponent background;
-
-  final void Function() action;
-
-  LevelCell(
-    this.levelNumber,
-    Vector2 position,
-    Vector2 size, {
-    required this.action,
-    required this.locked,
-  }) : super(position: position, size: size);
-
-  @override
-  Future<void> onLoad() async {
-    background = SvgComponent(
-      svg: !locked
-          ? await Svg.load('svg/tile.svg')
-          : await Svg.load('svg/locked.svg'),
-      size: size,
-    );
-    add(background);
-
-    // Add level number text
-    levelText = TextComponent(
-      text: levelNumber.toString(),
-      textRenderer: TextPaint(
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 24,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-
-    levelText.position = Vector2(
-      (size.x - levelText.size.x) / 2,
-      (size.y - levelText.size.y) / 2,
-    );
-
-    add(levelText);
-  }
-
-  @override
-  bool onTapDown(TapDownEvent event) {
-    scale = Vector2.all(1.05);
-    return true;
-  }
-
-  @override
-  void onTapUp(TapUpEvent event) {
-    action();
-    scale = Vector2.all(1.0);
-  }
-
-  @override
-  void onTapCancel(TapCancelEvent event) {
-    scale = Vector2.all(1.0);
   }
 }

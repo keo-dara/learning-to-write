@@ -102,12 +102,13 @@ class DataLoader {
     return true;
   }
 
-  Future<void> loadData(int index) async {
+  Future<String> loadData(int index) async {
     currentIndex = index;
     final data = await JsonReader.readJson('assets/data/position.json');
     final key = data.keys.toList()[currentIndex!];
     total = data.keys.length;
     position = Step.fromJson(data, key: key);
+    return key;
   }
 
   bool get isLast => currentIndex == total - 1;
