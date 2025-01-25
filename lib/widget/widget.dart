@@ -1,5 +1,6 @@
 import 'package:drawing/cores/game_sound.dart';
 import 'package:drawing/main.dart';
+import 'package:drawing/routes.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flutter/widgets.dart' hide Route;

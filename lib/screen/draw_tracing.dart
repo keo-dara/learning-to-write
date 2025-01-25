@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:drawing/cores/game_sound.dart';
 import 'package:drawing/data_loader.dart';
-import 'package:drawing/main.dart';
+import 'package:drawing/routes.dart';
 import 'package:drawing/widget/draw_line.dart';
 import 'package:drawing/widget/letter.dart';
 import 'package:flame/components.dart';
@@ -35,6 +35,17 @@ class DrawingTracingGame extends PositionComponent
     letter!.position = size / 2;
 
     add(letter!);
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+
+    /// to update
+    /// if current is not the same letter just reset
+    /// if current enter reset zone just call the update state to reset and tell current is update
+
+    print("Update $dt");
   }
 
   @override

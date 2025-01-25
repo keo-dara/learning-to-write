@@ -5,6 +5,7 @@ import 'package:drawing/cores/game_sound.dart';
 import 'package:drawing/cores/game_store.dart';
 import 'package:drawing/data_loader.dart';
 import 'package:drawing/main.dart';
+import 'package:drawing/routes.dart';
 import 'package:drawing/widget/button.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
@@ -64,25 +65,19 @@ class PausePage extends Component
 
   void retryGame() {
     game.router.pop();
-    game.router.pop();
     GameSound.playClickSound();
-    Future.delayed(const Duration(milliseconds: 10)).then((_) async {
-      game.router.pushNamed('level2');
-    });
+    game.router.pushNamed('drawing');
   }
 
-  void nextPage() {
+  void nextPage() async {
     game.router.pop();
-    game.router.pop();
-    Future.delayed(const Duration(milliseconds: 10)).then((_) async {
-      final more = await dataLoader.next();
-      GameSound.playClickSound();
-      if (more) {
-        game.router.pushNamed('level2');
-      } else {
-        game.router.pop();
-      }
-    });
+    final more = await dataLoader.next();
+    GameSound.playClickSound();
+    if (more) {
+      game.router.pushNamed('drawing');
+    } else {
+      game.router.pop();
+    }
   }
 
   @override

@@ -1,10 +1,10 @@
 import 'dart:async';
 
-import 'package:drawing/main.dart';
 import 'package:flame/components.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flame_svg/flame_svg.dart';
 
+import '../routes.dart';
 import '../widget/button.dart';
 
 class HubScreen extends Component with HasGameReference<RouterGame> {
@@ -12,7 +12,7 @@ class HubScreen extends Component with HasGameReference<RouterGame> {
     _bg = SpriteComponent(anchor: Anchor.center);
     _startButton = PlayButton(
       icon: "svg/play.svg",
-      action: () => game.router.pushNamed('level1'),
+      action: () => game.router.pushNamed('levels'),
     );
     _soundButton = PlayButton(
       icon: "svg/sound_on.svg",
@@ -33,7 +33,7 @@ class HubScreen extends Component with HasGameReference<RouterGame> {
     );
     _rateButton = PlayButton(
       icon: "svg/rating.svg",
-      action: () => game.router.pushNamed('level1'),
+      action: () => game.router.pushNamed('levels'),
     );
     _startButton.size = Vector2(160, 80);
 
