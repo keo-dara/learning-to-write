@@ -1,16 +1,16 @@
-# drawing
+# TEACH KID TO WRITE APP 
 
-A new Flutter project.
+There is one or two app in appstore and that app cost money and barely usable. So i decide to build my own version, but not enough features yet. I very busy with other projects and dont have much time and energy to focus on this app. I will release this on github for anyone who want to pickup this project and continue to improve or learn out of this project. 
 
-## Getting Started
+## FEATURE 
+- Sound System
+- Drawing
+- All the letters in Khmer
 
-This project is a starting point for a Flutter application.
+## IMPROVMENT 
 
-A few resources to get you started if this is your first Flutter project:
+- [ ] Bug fix with the navigation
+- [ ] Add numbers ... 
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![Screenshot_1737797275](https://github.com/user-attachments/assets/f9478437-4bc3-4e3b-bd08-b8b0f6fede29)![Screenshot_1737797273](https://github.com/user-attachments/assets/20cfa596-7eab-4dc3-9dbe-0812af4564eb)
+![Screenshot_1737797272](https://github.com/user-attachments/assets/cd1ad2c0-281c-4405-be9e-98d99882be04)
